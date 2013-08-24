@@ -28,6 +28,7 @@ public class Player extends CollableEntity {
 	private float actualFrame = 0;
 	private final int SPEED = 3;
 	private FacingSide facing = FacingSide.LEFT;
+	private int health = 100;
 
 	public Player( GameScreen screen, int x, int y ) {
 		super( x, y );
@@ -100,6 +101,17 @@ public class Player extends CollableEntity {
 		} else {
 			this.actualFrame = 0;
 		}
+	}
+	
+	public void hurt( int damage ) {
+		this.health -= damage;
+		if ( this.health <= 0 ) {
+			this.gameScreen.getGame().switchToDeath();
+		}
+	}
+	
+	public int getHealth() {
+		return this.health;
 	}
 	
 	public void setPosition( int x, int y ) {

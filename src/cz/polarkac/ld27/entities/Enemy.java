@@ -7,7 +7,6 @@ import java.awt.image.RasterFormatException;
 import java.util.ArrayList;
 import java.util.Random;
 
-import cz.polarkac.ld27.KeyboardListener;
 import cz.polarkac.ld27.graphics.Bitmap;
 import cz.polarkac.ld27.screens.GameScreen;
 
@@ -31,6 +30,7 @@ public class Enemy extends CollableEntity {
 	private int targetPointX;
 	private int targetPointY;
 	private Random rnd = new Random();
+	private int lastHurtTime = 0;
 
 	public Enemy( GameScreen screen, int x, int y ) {
 		super( x, y );
@@ -62,15 +62,13 @@ public class Enemy extends CollableEntity {
 
 	@Override
 	public void update( int deltaTime ) {
-		KeyboardListener k = this.gameScreen.getGame().getKeyboardListener();
+		Player pl = this.gameScreen.getPlayer();
+		this.targetPointX = pl.getPosX();
+		this.targetPointY = pl.getPosY();
 		int lastX = this.getPosX();
 		int lastY = this.getPosY();
 		int newX = lastX;
 		int newY = lastY;
-		if ( this.targetPointX == newX && this.targetPointY == newY ) {
-			this.targetPointX = this.rnd.nextInt( 200 );
-			this.targetPointY = this.rnd.nextInt( 150 );
-		}
 		int diffX = this.targetPointX - lastX;
 		int diffY = this.targetPointY - lastY;
 		if ( diffX < 0 ) {
@@ -99,13 +97,25 @@ public class Enemy extends CollableEntity {
 				this.setPosition( newX, lastY );
 				if ( this.isColliding( en ) ) {
 					newX = lastX;
-					this.targetPointX = this.rnd.nextInt( 800 );
+					if ( en instanceof Player && this.lastHurtTime == 0 ) {
+						( (Player) en ).hurt( 20 );
+						this.lastHurtTime = 500;
+					}
 				}
 				this.setPosition( lastX, newY );
 				if ( this.isColliding( en ) ) {
 					newY = lastY;
-					this.targetPointY = this.rnd.nextInt( 600 );
+					if ( en instanceof Player && this.lastHurtTime == 0 ) {
+						( (Player) en ).hurt( 20 );
+						this.lastHurtTime = 500;
+					}
 				}
+			}
+			
+			if ( this.lastHurtTime > 0 ) {
+				this.lastHurtTime -= deltaTime;
+			} else if ( this.lastHurtTime != 0 ){
+				this.lastHurtTime = 0;
 			}
 			this.setPosition( newX, newY );
 			this.actualFrame += 0.2;

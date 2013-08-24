@@ -7,9 +7,11 @@ import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 
 import cz.polarkac.ld27.screens.AboutScreen;
+import cz.polarkac.ld27.screens.DeathScreen;
 import cz.polarkac.ld27.screens.GameScreen;
 import cz.polarkac.ld27.screens.MenuScreen;
 import cz.polarkac.ld27.screens.Screen;
+import cz.polarkac.ld27.screens.WinnerScreen;
 
 public class Game extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
@@ -22,11 +24,15 @@ public class Game extends Canvas implements Runnable {
 	private AboutScreen aboutScreen;
 	private KeyboardListener keyboardListener;
 	private int lastScreenChange = 0;
+	private DeathScreen deathScreen;
+	private WinnerScreen winnerScreen;
 
 	public Game() {
 		this.setSize( 800, 600 );
 		this.gameScreen = new GameScreen( this );
 		this.menuScreen = new MenuScreen( this, this.gameScreen );
+		this.deathScreen = new DeathScreen( this, this.gameScreen );
+		this.winnerScreen = new WinnerScreen( this, this.gameScreen );
 		this.aboutScreen = new AboutScreen( this );
 		this.activeScreen = this.gameScreen;
 		this.keyboardListener = new KeyboardListener();
@@ -36,6 +42,8 @@ public class Game extends Canvas implements Runnable {
 
 	@Override
 	public void run() {
+		this.requestFocus();
+		
 		int FPS = 0;
 		int updates = 0;
 
@@ -59,7 +67,6 @@ public class Game extends Canvas implements Runnable {
 			try {
 				Thread.sleep( 2 );
 			} catch ( InterruptedException e ) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
@@ -82,7 +89,6 @@ public class Game extends Canvas implements Runnable {
 		}
 
 		Graphics2D g = (Graphics2D) buffer.getDrawGraphics();
-		//g.scale( 4, 4 );
 		
 		g.setColor( Color.BLACK );
 		g.fillRect( 0, 0, 800, 600 );
@@ -134,5 +140,20 @@ public class Game extends Canvas implements Runnable {
 	
 	public void switchToAbout() {
 		this.activeScreen = this.aboutScreen;
+	}
+
+	public void switchToDeath() {
+		this.activeScreen = this.deathScreen;
+	}
+
+	public void restart() {
+		this.gameScreen = new GameScreen( this );
+		this.deathScreen.setGameScreen( this.gameScreen );
+		this.winnerScreen.setGameScreen( this.gameScreen );
+		this.activeScreen = this.gameScreen;
+	}
+
+	public void switchToWiner() {
+		this.activeScreen = this.winnerScreen;
 	}
 }

@@ -20,6 +20,16 @@ public abstract class CollableEntity extends Entity {
 	}
 	
 	public boolean isColliding( CollableEntity e, int x, int y ) {
+		Rectangle r = new Rectangle( this.boundingBox );
+		r.x -= x;
+		r.y -= y;
+		r.width += x;
+		r.height += y;
+		
+		if ( e.getBoundingBox().intersects( r ) ) { 
+			return true;
+		}
+		
 		return false;
 	}
 	
