@@ -16,8 +16,6 @@ import cz.polarkac.ld27.screens.WinnerScreen;
 public class Game extends Canvas implements Runnable {
 	private static final long serialVersionUID = 1L;
 	private boolean isRunning = false;
-	private BufferedImage image = new BufferedImage( 800, 600,
-			BufferedImage.TYPE_INT_ARGB );
 	private Screen activeScreen;
 	private GameScreen gameScreen;
 	private MenuScreen menuScreen;

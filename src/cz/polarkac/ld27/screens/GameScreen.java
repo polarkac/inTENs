@@ -26,20 +26,20 @@ public class GameScreen extends Screen {
 	
 	public GameScreen( Game game ) {
 		super( game );
-		this.pl =  new Player( this, 0, 0 );
+		this.pl =  new Player( this, 350, 350 );
 		this.cam.setPosition( this.pl.getPosX(), this.pl.getPosY() );
 		this.entites.add( pl ); 
 		this.entites.add( new Tree( 80, 20 ) );
 		this.entites.add( new Tree( 100, 100 ) );
 		this.entites.add( new Tree( 200, 200 ) );
-		//this.entites.add( new Stone( 250, 250) );
+		this.entites.add( new Stone( 250 + 64, 250) );
 		this.entites.add( new Gate( this, 250, 250) );
 		
 		for ( int a = 0; a < 20; a++ ) {
 			this.entites.add( new Flower( 0, 0 ) );
 		}
 		for ( int a = 0; a < 3; a++ ) {
-			//this.entites.add( new Enemy( this, 30 + a * 30, 30 + a * 60 ) );
+			this.entites.add( new Enemy( this, 30 + a * 30, 30 + a * 60 ) );
 		}
 		
 		for ( int y = -4; y < 600 / 32; y++ ) {
