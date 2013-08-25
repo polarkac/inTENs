@@ -1,8 +1,12 @@
 package cz.polarkac.ld27.screens;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 import cz.polarkac.ld27.Game;
 import cz.polarkac.ld27.ZComparator;
@@ -23,6 +27,8 @@ public class GameScreen extends Screen {
 	private Camera cam = new Camera();
 	private Player pl;
 	private ArrayList<Entity> groundEntites = new ArrayList<Entity>();
+	private int reincarnationTime = 10000;
+	private Font font = new Font( Font.SANS_SERIF, Font.PLAIN, 36 );
 	
 	public GameScreen( Game game ) {
 		super( game );
@@ -42,9 +48,9 @@ public class GameScreen extends Screen {
 			this.entites.add( new Enemy( this, 30 + a * 30, 30 + a * 60 ) );
 		}
 		
-		for ( int y = -4; y < 600 / 32; y++ ) {
-			for ( int x = -4; x < 800 / 32; x++ ) {
-				if ( y >= 0 && y <= 10 && x >= 0 && x <= 10 ) {
+		for ( int y = -20; y < 600 / 32; y++ ) {
+			for ( int x = -20; x < 800 / 32; x++ ) {
+				if ( y >= -19 && y <= 16 && x >= -19 && x <= 23 ) {
 					this.groundEntites.add( new Grass( x * 64, y * 64 ) );
 				} else {
 					this.groundEntites.add( new Water( x * 64, y * 64 ) );
@@ -55,16 +61,36 @@ public class GameScreen extends Screen {
 
 	@Override
 	public void render( Graphics2D g ) {	
+		Rectangle screenR = new Rectangle( 0, 0, 800, 600 );
+		Rectangle entR = new Rectangle( );
+		entR.width = 64;
+		entR.height = 64;
 		for ( Entity e : this.groundEntites ) {
-			e.render( g, this.cam.getPosX(), this.cam.getPosY() );
+			entR.x = e.getPosX() - this.cam.getPosX();
+			entR.y = e.getPosY() - this.cam.getPosY();
+			if ( screenR.intersects( entR ) ) {
+				e.render( g, this.cam.getPosX(), this.cam.getPosY() );
+			}
 		}
 		Collections.sort( this.entites, this.comparator );
 		for ( Entity e : this.entites ) {
-			e.render( g, this.cam.getPosX(), this.cam.getPosY() );
+			entR.x = e.getPosX() - this.cam.getPosX();
+			entR.y = e.getPosY() - this.cam.getPosY();
+			if ( screenR.intersects( entR ) ) {
+				e.render( g, this.cam.getPosX(), this.cam.getPosY() );
+			}
 		}
 		
 		for ( int a = this.pl.getHealth() / 20; a > 0; a-- ) {
 			g.drawImage( Bitmap.spritesheet.getSubimage( 6 * 16, 0, 16, 16 ), 795 - a * 50, -10, 64, 64, null );
+		}
+		
+		if ( this.reincarnationTime <= 5000 ) {
+			String msg = "Reincarnation in " + ( this.reincarnationTime / 1000 ) + " seconds.";
+			g.setColor( Color.RED );
+			g.setFont( this.font );
+			int width = g.getFontMetrics( this.font ).stringWidth( msg );
+			g.drawString( msg, 800 / 2 - width / 2, 80 );
 		}
 	}
 
@@ -77,6 +103,17 @@ public class GameScreen extends Screen {
 			e.update( deltaTime );
 		}
 		this.cam.setPosition( this.pl.getPosX(), this.pl.getPosY() );
+		
+		this.reincarnationTime -= deltaTime;
+		if ( this.reincarnationTime <= 0 ) {
+			Random rnd = new Random();
+			boolean isReincarnated = false;
+			do {
+				Entity en = this.entites.get( rnd.nextInt( this.entites.size() ) );
+				isReincarnated = en.reincarnate( this.pl );
+			} while( !isReincarnated );
+			this.reincarnationTime = 10000;
+		}
 	}
 	
 	public ArrayList<Entity> getEntities() {

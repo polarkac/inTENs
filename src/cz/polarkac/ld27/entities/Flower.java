@@ -4,8 +4,6 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.Random;
 
-import javax.imageio.ImageIO;
-
 import cz.polarkac.ld27.graphics.Bitmap;
 
 public class Flower extends Entity {

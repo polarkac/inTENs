@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
-import java.awt.image.RasterFormatException;
 import java.util.ArrayList;
 
 import cz.polarkac.ld27.KeyboardListener;
@@ -29,6 +28,9 @@ public class Player extends CollableEntity {
 	private final int SPEED = 3;
 	private FacingSide facing = FacingSide.LEFT;
 	private int health = 100;
+	private int damageTime = 0;
+	private int knockbackTime = 0;
+	private FacingSide knockBackDir;
 
 	public Player( GameScreen screen, int x, int y ) {
 		super( x, y );
@@ -42,11 +44,12 @@ public class Player extends CollableEntity {
 	@Override
 	public void render( Graphics2D g, int cameraX, int cameraY ) {
 		BufferedImage subImage = null;
-		try {
-			subImage = this.playerImage.getSubimage( (int) this.actualFrame * 16, this.facing.value * 16, 16, 16 );
-			g.drawImage( subImage, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null );
-		} catch( RasterFormatException e ) {
-			e.printStackTrace();
+		subImage = this.playerImage.getSubimage( (int) this.actualFrame * 16, this.facing.value * 16, 16, 16 );
+		g.drawImage( subImage, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null );
+		
+		if ( this.damageTime > 0 ) {
+			g.setColor( new Color( 255, 0, 0, 30 ) );
+			g.fillRect( this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64 );
 		}
 	}
 
@@ -72,6 +75,22 @@ public class Player extends CollableEntity {
 		if ( k.left.isDown ) {
 			newX = lastX - SPEED;
 			this.facing = FacingSide.LEFT;
+		}
+		
+		if ( this.knockbackTime > 0 ) {
+			if ( this.knockBackDir == FacingSide.DOWN ) {
+				newY += 4;
+			}
+			if ( this.knockBackDir == FacingSide.UP ) {
+				newY -= 4;
+			}
+			if ( this.knockBackDir == FacingSide.LEFT ) {
+				newX -= 4;
+			}
+			if ( this.knockBackDir == FacingSide.RIGHT ) {
+				newX += 4;
+			}
+			this.knockbackTime -= deltaTime;
 		}
 		
 		if ( lastX != newX || lastY != newY ) {
@@ -101,24 +120,34 @@ public class Player extends CollableEntity {
 		} else {
 			this.actualFrame = 0;
 		}
+		
+		if ( this.damageTime > 0 ) {
+			this.damageTime -= deltaTime;
+		}
 	}
 	
-	public void hurt( int damage ) {
+	public void hurt( Entity en, int damage ) {
 		this.health -= damage;
+		this.damageTime  = 200;
 		if ( this.health <= 0 ) {
 			this.gameScreen.getGame().switchToDeath();
 		}
+		int diffX = this.getPosX() - en.getPosX();
+		int diffY = this.getPosY() - en.getPosY();
+		if ( diffX < 0 ) {
+			this.knockBackDir = FacingSide.LEFT;
+		} else {
+			this.knockBackDir = FacingSide.RIGHT;
+		}
+		if ( diffY < 0 ) {
+			this.knockBackDir = FacingSide.UP;
+		} else if ( diffY > 0 ){
+			this.knockBackDir = FacingSide.DOWN;
+		}
+		this.knockbackTime = 200;
 	}
 	
 	public int getHealth() {
 		return this.health;
 	}
-	
-	public void setPosition( int x, int y ) {
-		this.setPosX( x );
-		this.setPosY( y );
-		this.getBoundingBox().x = x + this.xOffset;
-		this.getBoundingBox().y = y + this.yOffset;
-	}
-
 }

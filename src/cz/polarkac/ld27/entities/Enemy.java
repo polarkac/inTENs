@@ -47,6 +47,17 @@ public class Enemy extends CollableEntity {
 		this.targetPointY = 0;
 	}
 
+	public Enemy( Enemy en ) {
+		super( en.getPosX(), en.getPosY() );
+		this.gameScreen = en.gameScreen;
+		this.xOffset = 10;
+		this.yOffset = 49;
+		this.setBoundingBox( new Rectangle( en.getPosX() + this.xOffset, en.getPosY() + this.yOffset, 44, 15 ) );
+		this.playerImage = en.playerImage;
+		this.targetPointX = 0;
+		this.targetPointY = 0;
+	}
+
 	@Override
 	public void render( Graphics2D g, int cameraX, int cameraY ) {
 		BufferedImage subImage = null;
@@ -71,17 +82,18 @@ public class Enemy extends CollableEntity {
 		int newY = lastY;
 		int diffX = this.targetPointX - lastX;
 		int diffY = this.targetPointY - lastY;
-		if ( diffX < 0 ) {
+		boolean inRadius = ( Math.sqrt( diffX * diffX + diffY * diffY ) ) > 300 ? false : true;
+		if ( diffX < 0 && inRadius ) {
 			newX -= SPEED;
 			this.facing = FacingSide.LEFT;
-		} else if ( diffX > 0 ) {
+		} else if ( diffX > 0 && inRadius ) {
 			newX += SPEED;
 			this.facing = FacingSide.RIGHT;
 		}
-		if ( diffY < 0 ) {
+		if ( diffY < 0 && inRadius ) {
 			newY -= SPEED;
 			this.facing = FacingSide.UP;
-		} else if ( diffY > 0 ) {
+		} else if ( diffY > 0 && inRadius ) {
 			newY += SPEED;
 			this.facing = FacingSide.DOWN;
 		}
@@ -98,7 +110,7 @@ public class Enemy extends CollableEntity {
 				if ( this.isColliding( en ) ) {
 					newX = lastX;
 					if ( en instanceof Player && this.lastHurtTime == 0 ) {
-						( (Player) en ).hurt( 20 );
+						( (Player) en ).hurt( this, 20 );
 						this.lastHurtTime = 500;
 					}
 				}
@@ -106,7 +118,7 @@ public class Enemy extends CollableEntity {
 				if ( this.isColliding( en ) ) {
 					newY = lastY;
 					if ( en instanceof Player && this.lastHurtTime == 0 ) {
-						( (Player) en ).hurt( 20 );
+						( (Player) en ).hurt( this, 20 );
 						this.lastHurtTime = 500;
 					}
 				}
@@ -127,11 +139,12 @@ public class Enemy extends CollableEntity {
 		}
 	}
 	
-	public void setPosition( int x, int y ) {
-		this.setPosX( x );
-		this.setPosY( y );
-		this.getBoundingBox().x = x + this.xOffset;
-		this.getBoundingBox().y = y + this.yOffset;
+	@Override
+	public boolean reincarnate( Player pl ) {
+		int lastX = pl.getPosX();
+		int lastY = pl.getPosY();
+		pl.setPosition( this.getPosX(), this.getPosY() );
+		this.setPosition( lastX, lastY );
+		return true;
 	}
-
 }

@@ -4,7 +4,6 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.image.BufferStrategy;
-import java.awt.image.BufferedImage;
 
 import cz.polarkac.ld27.screens.AboutScreen;
 import cz.polarkac.ld27.screens.DeathScreen;
@@ -106,6 +105,7 @@ public class Game extends Canvas implements Runnable {
 		if ( this.keyboardListener.escape.isDown && this.lastScreenChange <= 0) {
 			if ( this.activeScreen == this.gameScreen ) {
 				this.activeScreen = this.menuScreen;
+				this.menuScreen.setGameScreen( this.gameScreen );
 			} else {
 				this.activeScreen = this.gameScreen;
 			}

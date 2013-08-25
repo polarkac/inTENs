@@ -6,7 +6,6 @@ import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Random;
 
-import cz.polarkac.ld27.Game;
 import cz.polarkac.ld27.graphics.Bitmap;
 import cz.polarkac.ld27.screens.GameScreen;
 
@@ -51,8 +50,8 @@ public class Gate extends CollableEntity {
 		ArrayList<Entity> entities = this.gameScreen.getEntities();
 		for ( Entity e : entities ) {
 			if ( e instanceof Player ) {
-				Rectangle plR = new Rectangle( e.getPosX(), e.getPosY(), 64, 64 );
-				Rectangle enR = new Rectangle( this.getPosX() + 10, this.getPosY() + 30, 84, 34 );
+				Rectangle plR = new Rectangle( e.getPosX(), e.getPosY() + 32, 64, 32 );
+				Rectangle enR = new Rectangle( this.getPosX() - 1, this.getPosY() + 45, 66, 19 );
 				if ( plR.intersects( enR ) ) {
 					this.gameScreen.getGame().switchToWiner();
 				}

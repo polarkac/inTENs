@@ -16,13 +16,13 @@ public class MainWindow extends JFrame {
 		this.setContentPane( panel );
 		this.pack();
 		this.setResizable( false );
-		this.setDefaultCloseOperation( this.EXIT_ON_CLOSE );
-		this.setVisible( true );
+		this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
 		
 		game.start();
 	}
 
 	public static void main( String[] args ) {
 		MainWindow w = new MainWindow();
+		w.setVisible( true );
 	}
 }

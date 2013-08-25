@@ -40,4 +40,11 @@ public abstract class CollableEntity extends Entity {
 	public Rectangle getBoundingBox() {
 		return this.boundingBox;
 	}
+	
+	public void setPosition( int x, int y ) {
+		this.setPosX( x );
+		this.setPosY( y );
+		this.getBoundingBox().x = x + this.xOffset;
+		this.getBoundingBox().y = y + this.yOffset;
+	}
 }

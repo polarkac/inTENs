@@ -27,7 +27,10 @@ public abstract class Entity {
 		this.posY = y;
 	}
 	
+	public boolean reincarnate( Player pl ) {
+		return false;
+	}
+	
 	public abstract void render( Graphics2D g, int cameraX, int cameraY );
 	public abstract void update( int deltaTime );
-
 }

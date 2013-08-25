@@ -73,5 +73,9 @@ public class MenuScreen extends Screen {
 			this.selectedOption = this.menuOptions.length - 1;
 		}
 	}
+	
+	public void setGameScreen( GameScreen game ) {
+		this.parentScreen = game;
+	}
 
 }
