@@ -17,6 +17,7 @@ public class MainWindow extends JFrame {
 		this.pack();
 		this.setResizable( false );
 		this.setDefaultCloseOperation( JFrame.EXIT_ON_CLOSE );
+		this.setTitle( "inTENse - LD27 10 seconds" );
 		
 		game.start();
 	}
