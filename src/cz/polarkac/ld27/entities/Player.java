@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import cz.polarkac.ld27.KeyboardListener;
 import cz.polarkac.ld27.graphics.Bitmap;
 import cz.polarkac.ld27.screens.GameScreen;
+import cz.polarkac.ld27.sound.Sound;
 
 public class Player extends CollableEntity {
 	
@@ -129,6 +130,7 @@ public class Player extends CollableEntity {
 	public void hurt( Entity en, int damage ) {
 		this.health -= damage;
 		this.damageTime  = 200;
+		Sound.punch.play();
 		if ( this.health <= 0 ) {
 			this.gameScreen.getGame().switchToDeath();
 		}

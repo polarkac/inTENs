@@ -10,7 +10,6 @@ import cz.polarkac.ld27.graphics.Bitmap;
 import cz.polarkac.ld27.screens.GameScreen;
 
 public class Gate extends CollableEntity {
-	private ArrayList<BufferedImage> gateAnim = new ArrayList<BufferedImage>();
 	private int actualFrame = 0;
 	private int time = 0;
 	private int direction = 1;
@@ -18,9 +17,6 @@ public class Gate extends CollableEntity {
 	
 	public Gate( GameScreen game, int x, int y ) {
 		super( x, y );
-		this.gateAnim.add( Bitmap.spritesheet.getSubimage( 0 * 16, 2 * 16, 16, 16 ) );
-		this.gateAnim.add( Bitmap.spritesheet.getSubimage( 1 * 16, 2 * 16, 16, 16 ) );
-		this.gateAnim.add( Bitmap.spritesheet.getSubimage( 2 * 16, 2 * 16, 16, 16 ) );
 		Random rnd = new Random();
 		this.time = rnd.nextInt( 500 );
 		this.xOffset = 0;
@@ -31,7 +27,11 @@ public class Gate extends CollableEntity {
 
 	@Override
 	public void render( Graphics2D g, int cameraX, int cameraY ) {
-		g.drawImage( this.gateAnim.get( this.actualFrame ), this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null );
+		switch ( this.actualFrame ) {
+		case 0: g.drawImage( Bitmap.gate1, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null ); break;
+		case 1: g.drawImage( Bitmap.gate2, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null ); break;
+		case 2: g.drawImage( Bitmap.gate3, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null ); break;
+		} 
 	}
 
 	@Override

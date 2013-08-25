@@ -7,26 +7,25 @@ import java.util.Random;
 import cz.polarkac.ld27.graphics.Bitmap;
 
 public class Flower extends Entity {
-	private BufferedImage flowerImage = null;
+	private int flowerImage = 0;
 	private int time;
 	private boolean wasMoved = false;
 	
 	public Flower( int x, int y ) {
 		super( x, y );
 		Random rnd = new Random();
-		if ( x == 0 && y == 0) {
-			int xx = rnd.nextInt( 800 );
-			int yy = rnd.nextInt( 600 );
-			this.setPosX( xx );
-			this.setPosY( yy );
-		}
-		flowerImage = Bitmap.spritesheet.getSubimage( ( rnd.nextInt( 3 ) + 3 ) * 16, 0, 16, 16 );
+		flowerImage = rnd.nextInt( 3 );
 		this.time = rnd.nextInt( 1000 );
 	}
 
 	@Override
 	public void render( Graphics2D g, int cameraX, int cameraY ) {
-		g.drawImage( this.flowerImage, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null );
+		switch ( this.flowerImage ) {
+		case 0: g.drawImage( Bitmap.flower1, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null ); break;
+		case 1: g.drawImage( Bitmap.flower2, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null ); break;
+		case 2: g.drawImage( Bitmap.flower3, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null ); break;
+		} 
+		
 	}
 
 	@Override

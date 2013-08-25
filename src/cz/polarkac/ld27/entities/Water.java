@@ -9,15 +9,11 @@ import java.util.Random;
 import cz.polarkac.ld27.graphics.Bitmap;
 
 public class Water extends CollableEntity {
-	private ArrayList<BufferedImage> waterAnim = new ArrayList<BufferedImage>();
 	private int actualFrame = 0;
 	private int time = 0;
 	
 	public Water( int x, int y ) {
 		super( x, y );
-		this.waterAnim.add( Bitmap.spritesheet.getSubimage( 0 * 16, 1 * 16, 16, 16 ) );
-		this.waterAnim.add( Bitmap.spritesheet.getSubimage( 1 * 16, 1 * 16, 16, 16 ) );
-		this.waterAnim.add( Bitmap.spritesheet.getSubimage( 2 * 16, 1 * 16, 16, 16 ) );
 		Random rnd = new Random();
 		this.time = rnd.nextInt( 500 );
 		this.setBoundingBox( new Rectangle( x, y, 64, 64 ) );
@@ -25,7 +21,11 @@ public class Water extends CollableEntity {
 
 	@Override
 	public void render( Graphics2D g, int cameraX, int cameraY ) {
-		g.drawImage( this.waterAnim.get( this.actualFrame ), this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null );
+		switch ( this.actualFrame ) {
+		case 0: g.drawImage( Bitmap.water1, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null ); break;
+		case 1: g.drawImage( Bitmap.water2, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null ); break;
+		case 2: g.drawImage( Bitmap.water3, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null ); break;
+		} 
 	}
 
 	@Override

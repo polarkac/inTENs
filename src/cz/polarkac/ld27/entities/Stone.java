@@ -7,7 +7,6 @@ import java.awt.image.BufferedImage;
 import cz.polarkac.ld27.graphics.Bitmap;
 
 public class Stone extends CollableEntity {
-	private BufferedImage stoneImage = Bitmap.spritesheet.getSubimage( 2 * 16, 0, 16, 16 );
 	
 	public Stone( int x, int y ) {
 		super( x, y );
@@ -18,7 +17,7 @@ public class Stone extends CollableEntity {
 
 	@Override
 	public void render( Graphics2D g, int cameraX, int cameraY ) {
-		g.drawImage( this.stoneImage, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null );
+		g.drawImage( Bitmap.stone, this.getPosX() - cameraX, this.getPosY() - cameraY, 64, 64, null );
 	}
 
 	@Override
